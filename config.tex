@@ -1,0 +1,170 @@
+% Config
+\newcommand*{\group}{Gruppe}
+\newcommand*{\module}{Fach}
+\newcommand*{\image}{}
+\newcommand*{\students}{
+	(Max Mustermann, 123 456)
+}
+
+% Workspace settings
+% LTeX: enabled=false
+
+\documentclass[
+	a4paper,
+	12pt,
+]{article}
+
+\usepackage{scrhack} % addition to koma script; disables warning concerning  \float@addtolists  in package listings
+
+% Language settings
+\usepackage[ngerman]{babel}
+\selectlanguage{ngerman}
+
+% Package for text and input type
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc} %Linux: [utf8]; MAC: [macce]; Windows: [utf8]
+
+\setlength{\unitlength}{1mm} %one unit is equal 1mm
+\tolerance = 9000 % avoid that text gets wider the textwith
+\setlength\parindent{0pt} %no indentation of paragraphs
+
+\usepackage{
+	graphicx, % include graphics
+	listings, % for listings
+	enumerate,% for enumerations
+	epstopdf, % convert eps figures to pdf
+	multirow,  % for multirows and columns in tables
+	longtable % for tables longer than one page
+}
+
+% better floats for floating around figures and tables
+\usepackage{float}
+\restylefloat{table}
+\restylefloat{figure}
+
+% define how captions should look like
+\usepackage[bf,small]{caption}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\rfoot{Seite \thepage}
+\setlength{\headheight}{15pt}
+
+% avoid errors due to old font commands in gerapali
+\DeclareOldFontCommand{\sc}{\normalfont\scshape}{\@nomath\sc}
+\DeclareOldFontCommand{\em}{\normalfont\itshape}{\mathit}
+
+% Extract branch name from git HEAD 
+% from https://tex.stackexchange.com/questions/455396/how-to-include-the-current-git-commit-id-and-branch-in-my-document
+\usepackage{xstring, catchfile}
+\CatchFileDef{\headfull}{.git/HEAD.}{}
+\StrGobbleRight{\headfull}{1}[\head]
+\StrBehind[2]{\head}{/}[\branch]
+
+% Loop students for titlepage
+\usepackage{xinttools}
+
+% Document settings
+\def\authors{}
+\xintForpair #1#2 in \students \do {\edef\authors{\authors#1 #2, }}
+
+\usepackage{xstring}
+\StrGobbleRight{\authors}{2}[\authors] % remove last two characters of generated string
+
+\usepackage[
+	pdftitle={Hausaufgabe \branch},
+	pdfauthor={\authors},
+	pdfpagemode=UseOutlines,
+	colorlinks=true,
+	linkcolor=black,
+	urlcolor=black,
+	citecolor=black,
+	plainpages=false,
+	hypertexnames=false,
+	pdfpagelabels=true,
+	hyperfootnotes=false,
+	hyperindex=true
+	]{hyperref}
+	
+% Important packages to use
+\usepackage{pdfpages, graphicx, multirow, listings, enumerate, amsmath, amssymb, amsfonts, tikz}
+
+% Helper functions
+\newcommand*{\notundefined}[2]{
+	{\IfStrEq{#1}{}{}{#2}}
+}
+
+% Check document mode
+\newtoggle{includeAssignments}
+
+\usepackage{xstring}
+\IfStrEq{\jobname}{\detokenize{hausaufgabe}}{\toggletrue{includeAssignments}}{\togglefalse{includeAssignments}}
+
+% Document image
+\usepackage{tikzpagenodes}
+
+% PDF extractor
+% https://tex.stackexchange.com/questions/7653/how-to-iterate-through-the-name-of-files-in-a-folder
+\usepackage{texosquery, xinttools}
+
+\iftoggle{includeAssignments}
+{
+	\TeXOSQueryFilterFileList{\result}{,}{.+\string\.pdf}{./aufgaben}
+}
+
+% Begin document with titlepage
+% LTeX: enabled=true
+	
+\begin{document}
+
+\begin{titlepage}
+	\begin{center}
+		\begin{Large}
+			Tutorium: \group \\
+			\textbf{\module-Übungsblatt:} \branch \\
+
+			\vspace{2.5cm}
+
+			\begin{tabular}{r l}
+				\xintForpair #1#2 in \students \do
+				{\bfseries #1, & #2 \\}
+			\end{tabular}
+
+			\vspace{3cm}
+
+			\notundefined{\image}{
+				% Display image if it exists
+				\begin{tikzpicture}[remember picture, overlay, shift={(current page.south)}]
+					\node[anchor=south, yshift=10cm]{
+						\includegraphics[
+							width=5cm,
+							height=5cm,
+							keepaspectratio,
+						]{\image}
+					};
+				\end{tikzpicture}
+			}
+
+		\end{Large}
+	\end{center}
+
+	\vspace*{\fill}
+
+	\begin{flushright}
+		Aachen, \today
+	\end{flushright}
+\end{titlepage}
+
+\iftoggle{includeAssignments}
+{
+	% Load assignments
+	\notundefined{\result}{
+		\xintFor #1 in \result \do
+		{\includepdf[pages=-]{./aufgaben/#1}}
+	}
+}
+
+\input{abgabe}
+
+\end{document}

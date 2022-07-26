@@ -1,0 +1,45 @@
+{
+  // LaTeX runtime
+  "latex-workshop.latex.outDir": "%DIR%/temp",
+  "latex-workshop.latex.recipes": [
+    {
+      "name": "Compile 🔃",
+      "tools": ["abgabe", "hausaufgabe"]
+    }
+  ],
+  "latex-workshop.latex.tools": [
+    {
+      "name": "abgabe",
+      "command": "latexmk",
+      "args": [
+        "-synctex=1",
+        "-interaction=nonstopmode",
+        "-file-line-error",
+        "-pdf",
+        "-jobname=abgabe",
+        "-outdir=%OUTDIR%",
+        "%DOC%"
+      ],
+      "env": {}
+    },
+
+    {
+      "name": "hausaufgabe",
+      "command": "latexmk",
+      "args": [
+        "-synctex=1",
+        "-interaction=nonstopmode",
+        "-file-line-error",
+        "-pdf",
+        "-jobname=hausaufgabe",
+        "-outdir=%OUTDIR%",
+        "%DOC%"
+      ],
+      "env": {}
+    }
+  ],
+
+  // Spell checking tool
+  "ltex.language": "de-DE",
+  "ltex.enabled": ["latex"]
+}
