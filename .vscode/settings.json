@@ -38,6 +38,8 @@
       "env": {}
     }
   ],
+  //needed so that latexworkshop can find the compiled pdf (otherwise tries to look for config.pdf)
+  "latex-workshop.latex.jobname": "abgabe",
 
   // Spell checking tool
   "ltex.language": "de-DE",
