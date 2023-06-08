@@ -113,6 +113,15 @@
 	\TeXOSQueryFilterFileList{\result}{,}{.+\string\.pdf}{./aufgaben}
 }
 
+% Comment function for hausaufgabe.pdf
+\newcommand*{\comment}[1]{
+	\iftoggle{includeAssignments}{
+		\begin{tabular}{|p{10cm}}
+			#1
+		\end{tabular}
+	}
+}
+
 % Begin document with titlepage
 % LTeX: enabled=true
 	
