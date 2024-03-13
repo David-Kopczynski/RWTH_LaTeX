@@ -41,6 +41,8 @@
   //needed so that latexworkshop can find the compiled pdf (otherwise tries to look for config.pdf)
   "latex-workshop.latex.jobname": "abgabe",
 
+  "latex-workshop.message.badbox.show": false,
+
   // Spell checking tool
   "ltex.language": "de-DE",
   "ltex.enabled": ["latex"]
